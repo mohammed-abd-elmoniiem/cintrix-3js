@@ -81,8 +81,20 @@ scene.add(enviroment)
 
 // cintrix
 
-const cintrix = createCintrix(10);
+const count = 10
+
+const cintrix = createCintrix(count);
 // cintrix.position.x = -3
+
+// cintrix.geometry.center();
+//   cintrix.geometry?.center()
+
+// gsap.to(cintrix.rotation,{
+//   duration:15,
+//   x:3.14,
+//   repeat:-1,
+//   ease:'linear'
+// })
 
 scene.add(cintrix)
 
@@ -135,8 +147,8 @@ const pointLightHelper4 = new THREE.PointLightHelper(pointLight4)
 
 pointLight.position.set(-10,5,-10);
 pointLight2.position.set(-8,5,5);
-pointLight3.position.set(-8,5,5);
-pointLight4.position.set(-8,5,-5);
+pointLight3.position.set(-8,-5,5);
+pointLight4.position.set(-8,-5,-5);
 
 
 const pointLightHelper = new THREE.PointLightHelper(pointLight)
@@ -174,14 +186,41 @@ function animate(){
 
 animate();
 
+camera.position.set(-count/2 -1 , -count/2-1 , -count/2 -1)
+
 const cameraTimeLine = gsap.timeline();
 
-// cameraTimeLine.to(camera.position,{
-//   z:5,
-//   x:-10,
-//   y:10,
-//   duration:3
-// })
+cameraTimeLine.to(camera.position,{
+  z:count,
+  // x:count,
+  // y:count,
+  duration:50,
+  delay:3,
+  repeat:-1,
+  yoyo:true,
+  ease:'elastic'
+})
+cameraTimeLine.to(camera.position,{
+  // z:count,
+  x:count,
+  // y:count,
+  duration:50,
+  delay:3,
+  repeat:-1,
+  yoyo:true,
+  ease:'elastic'
+})
+
+cameraTimeLine.to(camera.position,{
+  // z:count,
+  // x:count,
+  y:count,
+  duration:50,
+  delay:3,
+  repeat:-1,
+  yoyo:true,
+  ease:'elastic'
+})
 
 // ------------------------------------------------------------------------------------------------
 
@@ -212,29 +251,31 @@ function createBox(x,y,z,geo , mat , matWire){
   box.position.set(x,y,z);
   box.add(wire)
   box.geometry.center()
-  const scale = 0.3
-  gsap.to(box.scale,{
+  const scale = 0.2
+
+  const cubesTL= gsap.timeline()
+  cubesTL.to(box.scale,{
     
     x:scale,
     y:scale,
     z:scale,
-    duration:2,
+    duration:5,
     delay: x *0.1 + z *0.3 + y*0.2 ,
     repeat:-1,
     yoyo:true,
-    ease:'elastic'
+    ease:'bounce'
   })
 
-    gsap.to(box.rotation,{
+    cubesTL.to(box.rotation,{
     
     x:Math.PI,
     y:Math.PI,
     z:Math.PI,
-    duration:2,
+    duration:5,
     delay: x *0.1 + z *0.3 + y*0.2 ,
     repeat:-1,
     yoyo:true,
-    ease:'elastic'
+    ease:'bounce'
   })
 
   return box
@@ -242,17 +283,22 @@ function createBox(x,y,z,geo , mat , matWire){
 
 function createCintrix(count = 5){
 
-  const cintrixGroub = new THREE.Group();
+
+
+  const cintrixGroub = new THREE.Group() ;
+
+  // cintrixGroub.position.set(0,0,0)
+
 
   const geo = new THREE.BoxGeometry(1,1,1);
-  const matWire = new THREE.MeshPhongMaterial({color:0xff00ff,wireframe:true,emissive:0xffd700 , intensity:1})
+  const matWire = new THREE.MeshPhongMaterial({color:0x000000,wireframe:true,emissive:0xffffff , intensity:10})
   const mat = new THREE.MeshPhysicalMaterial({color:0xffd700,roughness:0.2 , metalness:1.0,envMapIntensity:1.5,clearcoat:1.0,clearcoatRoughness:0.1});
 
-  for(let y = 0 ; y< count ; y++){
-    for(let z = 0 ; z < count ; z++){
-      for(let x = 0 ; x < count ; x++){
+  for(let y = -count/2 ; y< count/2 ; y++){
+    for(let z = -count/2 ; z < count/2 ; z++){
+      for(let x = -count/2; x < count/2 ; x++){
 
-        const box = createBox(x,y,z,geo ,mat,matWire);
+        const box = createBox(x+0.5,y+0.5,z+0.5,geo ,mat,matWire);
         // box.position.set(x,y,z);
         cintrixGroub.add(box)
     
