@@ -12,6 +12,10 @@ import { OrbitControls } from 'three/examples/jsm/Addons.js'
 
 
 
+const gui = new GUI()
+
+
+
 
 
 
@@ -38,7 +42,18 @@ console.log(canvasAspect.ascpect())
 // initialization => scene , renderer , camera +++++++++++++++++++++++++++++++++++++++++++++++
 
 const scene = new THREE.Scene()
-scene.fog = new THREE.Fog(0x000000,0.1,10);
+scene.fog = new THREE.Fog(0x000000,0.1,20);
+
+const setFog= {
+  far:20,
+  existing:true
+}
+
+gui.add(setFog,'far',1,200,1).name('far fog').onChange(value=>{scene.fog = setFog.existing ?  new THREE.Fog(0x000000,0.1,value) : null;
+})
+
+gui.add(setFog,'existing').name('enable fog').onChange(value=>{scene.fog = value? new THREE.Fog(0x000000,0.1,setFog.far):null;
+})
 
 
 
@@ -77,11 +92,11 @@ const mat = new THREE.MeshPhysicalMaterial({color:0xffffff,side:THREE.DoubleSide
 const enviroment = new THREE.Mesh(geocube,mat)
 
 
-scene.add(enviroment)
+// scene.add(enviroment)
 
 // cintrix
 
-const count = 10
+const count = 15
 
 const cintrix = createCintrix(count);
 // cintrix.position.x = -3
@@ -143,6 +158,43 @@ const pointLightHelper2 = new THREE.PointLightHelper(pointLight2)
 const pointLightHelper3 = new THREE.PointLightHelper(pointLight3)
 const pointLightHelper4 = new THREE.PointLightHelper(pointLight4)
 
+const lightFolder = gui.addFolder('lights');
+
+lightFolder.add(pointLight,'intensity',0,10,0.2).name('point light ')
+lightFolder.add(pointLight2,'intensity',0,10,0.2).name('point light 2')
+lightFolder.add(pointLight3,'intensity',0,10,0.2).name('point light 3 ')
+lightFolder.add(pointLight4,'intensity',0,10,0.2).name('point light 4')
+
+// animation on light
+
+gsap.to(pointLight,{
+  duration:5,
+  intensity:0,
+  repeat:-1,
+  yoyo:true
+})
+
+gsap.to(pointLight2,{
+  duration:5,
+  intensity:0,
+  repeat:-1,
+  yoyo:true
+})
+gsap.to(pointLight3,{
+  duration:5,
+  intensity:0,
+  repeat:-1,
+  yoyo:true
+})
+gsap.to(pointLight4,{
+  duration:5,
+  intensity:0,
+  repeat:-1,
+  yoyo:true
+})
+
+
+
 
 
 pointLight.position.set(-10,5,-10);
@@ -188,38 +240,106 @@ animate();
 
 camera.position.set(-count/2 -1 , -count/2-1 , -count/2 -1)
 
-const cameraTimeLine = gsap.timeline();
+const duration = 3;
+const timingFN = 'linear'
+
+const cameraTimeLine = gsap.timeline({
+  yoyo:true,
+  repeat:-1,
+  repeatDelay:15,
+  defaults:{
+    duration:3,
+    ease:'linear'
+  }
+});
 
 cameraTimeLine.to(camera.position,{
   z:count,
-  // x:count,
-  // y:count,
-  duration:50,
+  x:-count,
+  y:-count,
+  // duration:duration,
+  //  ease:timingFN,
   delay:3,
-  repeat:-1,
-  yoyo:true,
-  ease:'elastic'
+  // repeat:-1,
+  // yoyo:true,
+ 
 })
 cameraTimeLine.to(camera.position,{
-  // z:count,
-  x:count,
-  // y:count,
-  duration:50,
+  z:count,
+  x:-count,
+  y:count,
+  //   duration:duration,
+  //  ease:timingFN,
   delay:3,
-  repeat:-1,
-  yoyo:true,
-  ease:'elastic'
+  // repeat:-1,
+  // yoyo:true,
+ 
 })
 
 cameraTimeLine.to(camera.position,{
-  // z:count,
-  // x:count,
+  z:count,
+  x:count,
   y:count,
-  duration:50,
+  //  duration:duration,
+  //  ease:timingFN,
   delay:3,
-  repeat:-1,
-  yoyo:true,
-  ease:'elastic'
+  // repeat:-1,
+  // yoyo:true,
+
+})
+
+cameraTimeLine.to(camera.position,{
+  z:count,
+  x:count,
+  y:-count,
+  // duration:10,
+  delay:3,
+  // repeat:-1,
+  // yoyo:true,
+  // ease:'elastic'
+})
+
+cameraTimeLine.to(camera.position,{
+  z:-count,
+  x:count,
+  y:-count,
+  // duration:10,
+  delay:3,
+  // repeat:-1,
+  // yoyo:true,
+  // ease:'elastic'
+})
+
+cameraTimeLine.to(camera.position,{
+  z:-count,
+  x:count,
+  y:count,
+  // duration:10,
+  delay:3,
+  // repeat:-1,
+  // yoyo:true,
+  // ease:'elastic'
+})
+cameraTimeLine.to(camera.position,{
+  z:-count,
+  x:-count,
+  y:count,
+  // duration:10,
+  delay:3,
+  // repeat:-1,
+  // yoyo:true,
+  // ease:'elastic'
+})
+
+cameraTimeLine.to(camera.position,{
+  z:-count,
+  x:-count,
+  y:-count,
+  // duration:10,
+  // delay:3,
+  // repeat:-1,
+  // yoyo:true,
+  // ease:'elastic'
 })
 
 // ------------------------------------------------------------------------------------------------
@@ -259,7 +379,7 @@ function createBox(x,y,z,geo , mat , matWire){
     x:scale,
     y:scale,
     z:scale,
-    duration:5,
+    duration:15,
     delay: x *0.1 + z *0.3 + y*0.2 ,
     repeat:-1,
     yoyo:true,
@@ -271,7 +391,7 @@ function createBox(x,y,z,geo , mat , matWire){
     x:Math.PI,
     y:Math.PI,
     z:Math.PI,
-    duration:5,
+    duration:15,
     delay: x *0.1 + z *0.3 + y*0.2 ,
     repeat:-1,
     yoyo:true,
@@ -292,7 +412,7 @@ function createCintrix(count = 5){
 
   const geo = new THREE.BoxGeometry(1,1,1);
   const matWire = new THREE.MeshPhongMaterial({color:0x000000,wireframe:true,emissive:0xffffff , intensity:10})
-  const mat = new THREE.MeshPhysicalMaterial({color:0xffd700,roughness:0.2 , metalness:1.0,envMapIntensity:1.5,clearcoat:1.0,clearcoatRoughness:0.1});
+  const mat = new THREE.MeshPhysicalMaterial({color:0xffd700,roughness:0.2 , metalness:1.0,envMapIntensity:1.5,clearcoat:1.0,clearcoatRoughness:0.1,transparent:true});
 
   for(let y = -count/2 ; y< count/2 ; y++){
     for(let z = -count/2 ; z < count/2 ; z++){
@@ -305,6 +425,10 @@ function createCintrix(count = 5){
       }
     }
   }
+
+  gsap.to(mat,{opacity:0,
+    duration:2,repeat:-1,yoyo:true
+  })
 
   return cintrixGroub
 }
