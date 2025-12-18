@@ -45,7 +45,7 @@ const scene = new THREE.Scene()
 scene.fog = new THREE.Fog(0x000000,0.1,20);
 
 const setFog= {
-  far:20,
+  far:15,
   existing:true
 }
 
@@ -96,7 +96,7 @@ const enviroment = new THREE.Mesh(geocube,mat)
 
 // cintrix
 
-const count = 15
+const count = 10
 
 const cintrix = createCintrix(count);
 // cintrix.position.x = -3
@@ -383,7 +383,7 @@ function createBox(x,y,z,geo , mat , matWire){
     delay: x *0.1 + z *0.3 + y*0.2 ,
     repeat:-1,
     yoyo:true,
-    ease:'bounce'
+    ease:'elastic'
   })
 
     cubesTL.to(box.rotation,{
@@ -426,9 +426,9 @@ function createCintrix(count = 5){
     }
   }
 
-  gsap.to(mat,{opacity:0,
-    duration:2,repeat:-1,yoyo:true
-  })
+  // gsap.to(mat,{opacity:0,
+  //   duration:2,repeat:-1,yoyo:true
+  // })
 
   return cintrixGroub
 }
